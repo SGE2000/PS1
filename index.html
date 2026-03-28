@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Clinica Plus Salud | Cerquita de ti</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            color: #1e2a3a;
+            line-height: 1.5;
+        }
+
+        /* Header / Hero */
+        .hero {
+            background: linear-gradient(135deg, #0b5e7e 0%, #1e88a8 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: #ffd966;
+        }
+
+        .lema {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-top: 0.3rem;
+            opacity: 0.9;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin: 0.8rem 0 0.5rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Contact info in header */
+        .contact-bar {
+            background: rgba(0,0,0,0.2);
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .contact-bar a {
+            color: white;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .contact-bar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Services section */
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card i {
+            font-size: 2.5rem;
+            color: #1e88a8;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: #4a5568;
+        }
+
+        /* Botón flotante de agendar cita */
+        .btn-floating {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #0b5e7e;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-floating:hover {
+            background: #094c66;
+            transform: scale(1.02);
+        }
+
+        /* Botón flotante de WhatsApp */
+        .btn-whatsapp {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: scale(1.02);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 550px;
+            width: 90%;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: #0b5e7e;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            background: #0b5e7e;
+            color: white;
+            border: none;
+            padding: 0.9rem;
+            width: 100%;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            background: #094c66;
+        }
+
+        .required:after {
+            content: " *";
+            color: red;
+        }
+
+        .error-msg {
+            color: #e53e3e;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .success-toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #2b6e3c;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 40px;
+            z-index: 1100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: opacity 0.3s;
+        }
+
+        footer {
+            background: #e2e8f0;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+        }
+
+        .social-links a {
+            color: #0b5e7e;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: 0.2s;
+        }
+
+        .social-links a:hover {
+            color: #094c66;
+        }
+
+        @media (max-width: 640px) {
+            .btn-floating {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+                bottom: 1rem;
+                right: 1rem;
+            }
+            .btn-whatsapp {
+                bottom: 1rem;
+                left: 1rem;
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+            .contact-bar {
+                flex-direction: column;
+                gap: 0.3rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="logo">
+            <i class="fas fa-hospital-user"></i> Clinica Plus Salud
+        </div>
+        <div class="lema">"Cerquita de ti"</div>
+        <div class="contact-bar">
+            <span><i class="fas fa-phone-alt"></i> Tel: 8765-5578</span>
+            <span><i class="fas fa-envelope"></i> plusalud.info@gmail.com</span>
+            <span><i class="fas fa-map-marker-alt"></i> Col. Las Minitas, Edificio Plaza Millenium II, Avenida Juan Lindo</span>
+        </div>
+        <h1>Tu bienestar, nuestra prioridad</h1>
+        <p>Atención médica integral con los mejores especialistas. Agenda tu cita de forma rápida y segura.</p>
+    </div>
+
+    <div class="container">
+        <div class="services">
+            <div class="card">
+                <i class="fas fa-stethoscope"></i>
+                <h3>Especialidades múltiples</h3>
+                <p>Ortopedia, cirugía, ginecología, psicología, nutrición y más.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Agendamiento fácil</h3>
+                <p>Elige tu médico, fecha y hora, y recibe confirmación por correo.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-clock"></i>
+                <h3>Atención oportuna</h3>
+                <p>Respetamos tu tiempo, con recordatorios y gestión eficiente.</p>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/50487655578?text=Hola,%20quiero%20agendar%20una%20cita%20en%20Clinica%20Plus%20Salud" class="btn-whatsapp" target="_blank">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+    </a>
+
+    <button class="btn-floating" id="openModalBtn">
+        <i class="fas fa-calendar-plus"></i> Agendar cita
+    </button>
+
+    <!-- Modal de cita -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-notes-medical"></i> Solicitar cita</h2>
+            <form id="appointmentForm">
+                <div class="form-group">
+                    <label class="required">Nombre completo</label>
+                    <input type="text" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label class="required">Teléfono</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="required">Correo electrónico</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label class="required">Médico</label>
+                    <select id="doctorSelect" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="required">Fecha deseada</label>
+                    <input type="date" id="appointmentDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="required">Hora preferida</label>
+                    <select id="appointmentTime" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Mensaje adicional (opcional)</label>
+                    <textarea id="message" rows="2"></textarea>
+                </div>
+                <button type="submit">Enviar solicitud</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://www.facebook.com/people/Clinica-Plus-Salud/61573654212345/?locale=es_LA" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="mailto:plusalud.info@gmail.com"><i class="fas fa-envelope"></i></a>
+            <a href="https://wa.me/50487655578" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p>&copy; 2025 Clinica Plus Salud – Cerquita de ti | Tel: 8765-5578 | plusalud.info@gmail.com</p>
+        <p>Dirección: Col. Las Minitas, Edificio Plaza Millenium II, Avenida Juan Lindo</p>
+    </footer>
+
+    <script>
+        // --- CONSTANTES Y CONFIGURACIÓN ---
+        const STORAGE_CITAS = "clinica_citas";
+        const STORAGE_DOCTORES = "clinica_doctores";
+
+        // Doctores iniciales (se cargarán si no existen en localStorage)
+        const defaultDoctors = [
+            { id: "doc1", name: "Mario Moya", specialty: "Ortopeda" },
+            { id: "doc2", name: "Pablo Borjas", specialty: "Cirujano" },
+            { id: "doc3", name: "Odalis Cerrato", specialty: "Internista" },
+            { id: "doc4", name: "Daisy Carbajal", specialty: "Ginecóloga" },
+            { id: "doc5", name: "Pablo Espinoza", specialty: "Oncólogo" },
+            { id: "doc6", name: "Yadira Cabrera", specialty: "Nutricionista" },
+            { id: "doc7", name: "Rosa Sierra", specialty: "Nutricionista" },
+            { id: "doc8", name: "María Valeriano", specialty: "Nutricionista" },
+            { id: "doc9", name: "Mario Cortes", specialty: "Psicólogo" },
+            { id: "doc10", name: "Stephany Melgar", specialty: "Psicóloga" },
+            { id: "doc11", name: "Claudia Amador", specialty: "Psicóloga" },
+            { id: "doc12", name: "Johana Gómez", specialty: "Optometrista" },
+            { id: "doc13", name: "Alejandra Flores", specialty: "Médico General" }
+        ];
+
+        // Inicializar doctores en localStorage si no existen (con horario por defecto)
+        function initDoctors() {
+            let doctors = localStorage.getItem(STORAGE_DOCTORES);
+            if (!doctors) {
+                const doctorsWithSchedule = defaultDoctors.map(doc => ({
+                    ...doc,
+                    schedule: {
+                        monday: { active: true, start: "08:00", end: "17:00", slotDuration: 30 },
+                        tuesday: { active: true, start: "08:00", end: "17:00", slotDuration: 30 },
+                        wednesday: { active: true, start: "08:00", end: "17:00", slotDuration: 30 },
+                        thursday: { active: true, start: "08:00", end: "17:00", slotDuration: 30 },
+                        friday: { active: true, start: "08:00", end: "17:00", slotDuration: 30 },
+                        saturday: { active: true, start: "08:00", end: "13:00", slotDuration: 30 },
+                        sunday: { active: false, start: "08:00", end: "13:00", slotDuration: 30 }
+                    }
+                }));
+                localStorage.setItem(STORAGE_DOCTORES, JSON.stringify(doctorsWithSchedule));
+            }
+        }
+
+        function getDoctors() {
+            return JSON.parse(localStorage.getItem(STORAGE_DOCTORES)) || [];
+        }
+
+        function getAppointments() {
+            return JSON.parse(localStorage.getItem(STORAGE_CITAS)) || [];
+        }
+
+        function saveAppointments(appointments) {
+            localStorage.setItem(STORAGE_CITAS, JSON.stringify(appointments));
+        }
+
+        // Rellenar select de médicos
+        function populateDoctorSelect() {
+            const doctors = getDoctors();
+            const select = document.getElementById("doctorSelect");
+            select.innerHTML = '<option value="">Seleccione un médico</option>';
+            doctors.forEach(doc => {
+                const option = document.createElement("option");
+                option.value = doc.id;
+                option.textContent = `${doc.name} - ${doc.specialty}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Generar horas disponibles (08:00 a 18:00 cada 30 min)
+        function populateTimeSlots() {
+            const timeSelect = document.getElementById("appointmentTime");
+            timeSelect.innerHTML = '<option value="">Seleccione hora</option>';
+            for (let h = 8; h <= 17; h++) {
+                for (let m = 0; m < 60; m += 30) {
+                    if (h === 17 && m > 0) continue;
+                    const hourStr = h.toString().padStart(2,'0');
+                    const minuteStr = m.toString().padStart(2,'0');
+                    const timeValue = `${hourStr}:${minuteStr}`;
+                    if (timeValue <= "17:30") {
+                        const option = document.createElement("option");
+                        option.value = timeValue;
+                        option.textContent = timeValue;
+                        timeSelect.appendChild(option);
+                    }
+                }
+            }
+        }
+
+        // Validar fecha futura y días hábiles (lunes a viernes, permitir sábados, no domingos)
+        function isValidDate(dateStr) {
+            const selected = new Date(dateStr);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            if (selected < today) return false;
+            const day = selected.getDay();
+            if (day === 0) return false;
+            return true;
+        }
+
+        // Envío de correo con EmailJS
+        function sendEmail(appointmentData) {
+            // Configuración de EmailJS (debes reemplazar con tus credenciales reales)
+            emailjs.init("TU_USER_ID"); // Reemplazar con tu User ID de EmailJS
+            const templateParams = {
+                patient: appointmentData.fullName,
+                phone: appointmentData.phone,
+                email: appointmentData.email,
+                doctor: appointmentData.doctorName,
+                date: appointmentData.date,
+                time: appointmentData.time,
+                message: appointmentData.message || "Sin mensaje adicional",
+            };
+            return emailjs.send("TU_SERVICE_ID", "TU_TEMPLATE_ID", templateParams);
+        }
+
+        // Mostrar toast temporal
+        function showToast(message, isError = false) {
+            const toast = document.createElement("div");
+            toast.className = "success-toast";
+            toast.style.background = isError ? "#c53030" : "#2b6e3c";
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Guardar cita en localStorage y enviar correo
+        async function handleAppointmentSubmit(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById("fullName").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const doctorId = document.getElementById("doctorSelect").value;
+            const date = document.getElementById("appointmentDate").value;
+            const time = document.getElementById("appointmentTime").value;
+            const message = document.getElementById("message").value.trim();
+
+            if (!fullName || !phone || !email || !doctorId || !date || !time) {
+                showToast("Por favor complete todos los campos obligatorios.", true);
+                return;
+            }
+            if (!isValidDate(date)) {
+                showToast("La fecha debe ser futura y no puede ser domingo. Seleccione un día válido.", true);
+                return;
+            }
+
+            const doctors = getDoctors();
+            const doctor = doctors.find(d => d.id === doctorId);
+            if (!doctor) {
+                showToast("Médico no válido", true);
+                return;
+            }
+
+            const appointments = getAppointments();
+            const newId = Date.now().toString() + Math.random().toString(36).substr(2, 4);
+            const newAppointment = {
+                id: newId,
+                patientName: fullName,
+                phone: phone,
+                email: email,
+                doctorId: doctorId,
+                doctorName: doctor.name,
+                specialty: doctor.specialty,
+                date: date,
+                time: time,
+                message: message,
+                status: "pendiente",
+                createdAt: new Date().toISOString()
+            };
+
+            appointments.push(newAppointment);
+            saveAppointments(appointments);
+
+            try {
+                await sendEmail({
+                    fullName, phone, email, doctorName: doctor.name,
+                    date, time, message
+                });
+                showToast("Cita agendada exitosamente. Revisa tu correo.");
+            } catch (err) {
+                console.error("Error al enviar correo:", err);
+                showToast("Cita guardada, pero hubo un problema con el envío del correo. Contacta a la clínica.", true);
+            }
+
+            document.getElementById("appointmentForm").reset();
+            document.getElementById("appointmentModal").style.display = "none";
+        }
+
+        // Modal logic
+        const modal = document.getElementById("appointmentModal");
+        const openBtn = document.getElementById("openModalBtn");
+        const closeSpan = document.querySelector(".close-modal");
+
+        openBtn.onclick = () => {
+            populateDoctorSelect();
+            populateTimeSlots();
+            modal.style.display = "flex";
+        };
+        closeSpan.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+        initDoctors();
+        populateDoctorSelect();
+        populateTimeSlots();
+
+        const form = document.getElementById("appointmentForm");
+        form.addEventListener("submit", handleAppointmentSubmit);
+    </script>
+</body>
+</html>
